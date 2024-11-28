@@ -26,8 +26,7 @@ function GameBoard(){
         } 
     }
 
-    const printBoard = () => {
-        const cell = game.getBoard();  
+    const printBoard = () => { 
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getSymbol()))
         console.log(boardWithCellValues);
     };
@@ -40,7 +39,7 @@ function GameBoard(){
 }
 //cells
 function Cell() {
-    let value = ''
+    let value = '';
 
     const addSymbol = (player) => {
         value = player;
@@ -59,7 +58,7 @@ function GameController(
     playerOneName = 'Player One',
     playerTwoName = 'Player Two'
 ) {
-    const board = gameBoard();
+    const board = GameBoard();
 
     const players = [
         {
@@ -83,7 +82,7 @@ function GameController(
     const printNewRound = () => {
         board.printBoard();
         console.log(`${getActivePlayer().name}'s turn.`);
-    }
+    };
     
     const playRound = (square) => {
 
@@ -94,12 +93,45 @@ function GameController(
         //after putting symbol we switch the turns get the new board with the value X or O
         switchPlayerTurn();
         printNewRound();
-    }
+    };
     //get the initial round
     printNewRound();
     //revelaed that active polayer is gonnab e for dom manipulation
     return {
         playRound, 
-        getActivePlayer
+        getActivePlayer,
+        getBoard: board.getBoard
     };
 }
+
+function ScreenController() {
+    const game = gameBoard();
+
+    const playerTurnDiv = document.querySelector('.turn')
+    const boardDiv = document.querySelector('.board')
+
+    const updateScreen = () => {
+        boardDiv.textContent = '';
+    }
+
+    const board  = game.getBoard();
+    const activePlayer = game.getActivePlayer();
+
+
+    playerTurnDiv.textContent = `${activePlayer.name}'s turn`;
+    board.forEach(row => { 
+        row.forEach((cell, index) => {
+            const button = document.createElement('button');
+            button.classList.add('cell')
+            cellButton.dataset.sqare = index;
+            cellButton.textContent = cell.getSymbol();
+
+            boardDiv.appendChild(cellButton);
+        });
+    });
+    //Add event listeners to the cell buttons in a function module
+    function clickHandlerCells(e) {
+        
+    }
+   
+};
