@@ -108,37 +108,43 @@ function GameController(
 }
 
 function ScreenController() {
-    const game = gameBoard();
+    const game = GameController();
 
     const playerTurnDiv = document.querySelector('.turn')
     const boardDiv = document.querySelector('.board')
 
     const updateScreen = () => {
         boardDiv.textContent = '';
-    }
+   
+        const board  = game.getBoard();
+        const activePlayer = game.getActivePlayer();
 
-    const board  = game.getBoard();
-    const activePlayer = game.getActivePlayer();
 
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn`;
+        board.forEach((row, rowIndex) => { 
+            row.forEach((cell, columnIndex) => {       
+                const cellButton = document.createElement('button');
+                cellButton.classList.add('cell')
+                
+                cellButton.rowIndex = rowIndex;
+                cellButton.columnIndex = columnIndex;
+                
+                cellButton.textContent = cell.getSymbol();
 
-    playerTurnDiv.textContent = `${activePlayer.name}'s turn`;
-    board.forEach(row => { 
-        row.forEach((cell, index) => {
-            const button = document.createElement('button');
-            button.classList.add('cell')
-            cellButton.dataset.sqare = index;
-            cellButton.textContent = cell.getSymbol();
-
-            boardDiv.appendChild(cellButton);
+                boardDiv.appendChild(cellButton);
+            });
         });
-    });
+    };
     //Add event listeners to the cell buttons in a function module
     function clickHandlerCells(e) {
-        const selectedCell =  e.target.dataset.square;
+        const target = e.target
         
-        if(!selectedCell) return;
+        if(!target.classList.contains('cell')) return;
 
-        game.playRound(selectedCell);
+        const row = target.rowIndex
+        const column = target.columnIndex
+        
+        game.playRound({row, column});
         updateScreen(); 
     }
 
