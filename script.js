@@ -23,6 +23,9 @@ function GameBoard(){
 
         if (cell.getSymbol() === '') {
             cell.addSymbol(playerSymbol)
+        }
+        else {
+            return;
         } 
     }
 
@@ -131,7 +134,17 @@ function ScreenController() {
     });
     //Add event listeners to the cell buttons in a function module
     function clickHandlerCells(e) {
+        const selectedCell =  e.target.dataset.square;
         
+        if(!selectedCell) return;
+
+        game.playRound(selectedCell);
+        updateScreen(); 
     }
+
+    boardDiv.addEventListener('click', clickHandlerCells);
+    
+    updateScreen();
    
 };
+    ScreenController();
