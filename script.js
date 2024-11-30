@@ -10,9 +10,36 @@ function GameBoard(){
             board[i].push(Cell());
         }
     }
-    //not implemented
-    const winningCombos = []
 
+    const winConditions = [
+        //horizontal
+        [[0, 0], [0, 1], [0, 2]],
+        [[1, 0], [1, 1], [1, 2]],
+        [[2, 0], [2, 1], [2, 2]],
+        //vertical
+        [[0, 0], [1, 0], [2, 0]],
+        [[0, 1], [1, 1], [2, 1]],
+        [[0, 2], [1, 2], [2, 2]],
+        //diagonal
+        [[0, 0], [1, 1], [2, 2]],
+        [[0, 2], [1, 1], [2, 0]]
+    ]
+
+    const checkWinner = () => {
+        for(const conditions of winConditions) {
+            const[firstRow, firstColumn] = conditions[0]
+            if (board[firstRow][firstColumn].getSymbol() !== '' && 
+            conditions.every (([row, column]) => board[row][column].getSymbol() === board[firstRow][firstColumn].getSymbol())) {
+                console.log(`The winner symbol is ${board[firstColumn][firstColumn].getSymbol()}`);
+                return board[firstColumn][firstColumn].getSymbol();
+            }
+        }
+
+        if(getBoard().every(row => row.every(cell => cell.getSymbol() !== ''))) {
+            return 'draw';
+        }
+    }
+        
     const getBoard = () => board;
 
     const putSymbol = (square, playerSymbol) => {
@@ -22,7 +49,7 @@ function GameBoard(){
         const cell = board[row][column]
 
         if (cell.getSymbol() === '') {
-            cell.addSymbol(playerSymbol)
+            cell.addSymbol(playerSymbol);
         }
         else {
             return;
@@ -37,7 +64,8 @@ function GameBoard(){
     return {
         getBoard, 
         putSymbol, 
-        printBoard
+        printBoard,
+        checkWinner
     }
 }
 //cells
@@ -92,6 +120,16 @@ function GameController(
         const { row, column } = square;
         board.putSymbol({row, column}, getActivePlayer().symbol);
         console.log(`${getActivePlayer().name} put ${getActivePlayer().symbol} at index [${row, column}]`)
+
+        winner = board.checkWinner();
+        if(winner){
+            if(winner === 'draw') {
+                console.log('game is draw');
+            } else {
+                console.log(`The winner is ${winner}`);
+            }
+        }
+        
 
         //after putting symbol we switch the turns get the new board with the value X or O
         switchPlayerTurn();
