@@ -43,6 +43,14 @@ function GameBoard(){
         
     const getBoard = () => board;
 
+    const resetBoard = () => {
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                board[i][j].addSymbol('')
+            }
+        }
+    }
+
     const putSymbol = (square, playerSymbol) => {
         //call put symbol with a square and what player and get the row column
 
@@ -67,7 +75,8 @@ function GameBoard(){
         getBoard, 
         putSymbol, 
         printBoard,
-        checkWinner
+        checkWinner,
+        resetBoard
     }
 }
 //cells
@@ -105,9 +114,12 @@ function GameController(
     ];
 
     let activePlayer = players[0]
+    let gameOverState = false;
 
     const switchPlayerTurn = () => {
-        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+        if(!gameOverState){
+        activePlayer = activePlayer === players[0] ? players[1] : players[0]
+        };
     };
     //module for active player
     const getActivePlayer = () => activePlayer;
@@ -118,6 +130,9 @@ function GameController(
     };
     
     const playRound = (square) => {
+        if(gameOverState) {
+            return
+        };
         const { row, column } = square;
         const currentBoard = board.getBoard();
         
@@ -132,6 +147,7 @@ function GameController(
             } else {
                 console.log(`The winner is ${winner}`);
             }
+            gameOverState = true;
         }
         
 
@@ -142,12 +158,21 @@ function GameController(
             console.log('Cell is already occupied. Please choose another cell.');
         }
     };
+
+    //restartGameFunction
+    const restartGame = () => {
+        board.resetBoard();
+        gameOverState = false;
+        activePlayer = players[0]
+        printNewRound();
+    }
     //get the initial round
     printNewRound();
     //revelaed that active polayer is gonnab e for dom manipulation
     return {
         playRound, 
         getActivePlayer,
+        restartGame,
         getBoard: board.getBoard,
         checkWinner: board.checkWinner
     };
