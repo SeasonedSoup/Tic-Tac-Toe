@@ -45,6 +45,7 @@ function GameBoard(){
 
     const putSymbol = (square, playerSymbol) => {
         //call put symbol with a square and what player and get the row column
+
         const {row, column} = square;
                     //access it using the board array obj
         const cell = board[row][column]
@@ -117,8 +118,10 @@ function GameController(
     };
     
     const playRound = (square) => {
-
         const { row, column } = square;
+        const currentBoard = board.getBoard();
+        
+        if (currentBoard[row][column].getSymbol() === '') {
         board.putSymbol({row, column}, getActivePlayer().symbol);
         console.log(`${getActivePlayer().name} put ${getActivePlayer().symbol} at index [${row, column}]`)
 
@@ -135,6 +138,9 @@ function GameController(
         //after putting symbol we switch the turns get the new board with the value X or O
         switchPlayerTurn();
         printNewRound();
+        } else {
+            console.log('Cell is already occupied. Please choose another cell.');
+        }
     };
     //get the initial round
     printNewRound();
