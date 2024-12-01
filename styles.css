@@ -21,3 +21,16 @@ button.cell {
     font-size: 4rem;
     cursor: pointer;
 }
+
+.announce {
+    width: 500px;
+    height: 500px;
+    background-color: lightgray;
+    margin-left: 50px;
+}
+
+.result {
+    width: 500px;
+    height: 200px;
+    background-color: yellow;
+}

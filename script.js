@@ -30,14 +30,15 @@ function GameBoard(){
             const[firstRow, firstColumn] = conditions[0]
             if (board[firstRow][firstColumn].getSymbol() !== '' && 
             conditions.every (([row, column]) => board[row][column].getSymbol() === board[firstRow][firstColumn].getSymbol())) {
-                console.log(`The winner symbol is ${board[firstColumn][firstColumn].getSymbol()}`);
-                return board[firstColumn][firstColumn].getSymbol();
+                console.log(`The winner symbol is ${board[firstRow][firstColumn].getSymbol()}`);
+                return board[firstRow][firstColumn].getSymbol();
             }
         }
 
         if(getBoard().every(row => row.every(cell => cell.getSymbol() !== ''))) {
             return 'draw';
         }
+        return null;
     }
         
     const getBoard = () => board;
@@ -141,19 +142,21 @@ function GameController(
     return {
         playRound, 
         getActivePlayer,
-        getBoard: board.getBoard
+        getBoard: board.getBoard,
+        checkWinner: board.checkWinner
     };
 }
 
 function ScreenController() {
     const game = GameController();
 
-    const playerTurnDiv = document.querySelector('.turn')
-    const boardDiv = document.querySelector('.board')
+    const playerTurnDiv = document.querySelector('.turn');
+    const boardDiv = document.querySelector('.board');
+    const resultDiv = document.querySelector('.result');
 
     const updateScreen = () => {
         boardDiv.textContent = '';
-   
+        resultDiv.textContent = '';
         const board  = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
@@ -170,8 +173,13 @@ function ScreenController() {
                 cellButton.textContent = cell.getSymbol();
 
                 boardDiv.appendChild(cellButton);
+                
             });
         });
+        const winnerText = showWinner();
+        if (winnerText) {
+            resultDiv.textContent = winnerText;
+        }
     };
     //Add event listeners to the cell buttons in a function module
     function clickHandlerCells(e) {
@@ -187,6 +195,14 @@ function ScreenController() {
     }
 
     boardDiv.addEventListener('click', clickHandlerCells);
+
+    let showWinner = () => {
+        let winner = game.checkWinner()
+        if(winner){
+            return winner === 'draw' ? 'The game is a draw' : `The winner is ${winner}`
+        }
+        return '';
+    }
     
     updateScreen();
    
