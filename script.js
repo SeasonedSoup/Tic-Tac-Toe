@@ -179,11 +179,16 @@ function GameController(
 }
 
 function ScreenController() {
-    const game = GameController();
+    //initailzie before passing
+    let game;
 
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
     const resultDiv = document.querySelector('.result');
+    const resetButton = document.querySelector('.Replay');
+    const startButton = document.querySelector('.start');
+    const playerOneInput = document.querySelector('#playerOneInput');
+    const playerTwoInput = document.querySelector('#playerTwoInput');
 
     const updateScreen = () => {
         boardDiv.textContent = '';
@@ -224,9 +229,22 @@ function ScreenController() {
         game.playRound({row, column});
         updateScreen(); 
     }
+    
 
     boardDiv.addEventListener('click', clickHandlerCells);
 
+    resetButton.addEventListener('click', () => {
+        game.restartGame();
+        updateScreen();
+    })
+    
+    startButton.addEventListener('click', () => {
+        const playerOneName = playerOneInput.value || 'Player One';
+        const playerTwoName = playerTwoInput.value || 'Player Two';
+
+        game = GameController(playerOneName, playerTwoName); // Pass names to GameController.
+        updateScreen();
+    });
     let showWinner = () => {
         let winner = game.checkWinner()
         if(winner){
@@ -234,8 +252,6 @@ function ScreenController() {
         }
         return '';
     }
-    
-    updateScreen();
    
 };
     ScreenController();
